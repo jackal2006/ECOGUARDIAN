@@ -1,0 +1,130 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile containing eco points and credentials",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "ecoPoints": { "type": "number" },
+        "badges": { "type": "array" },
+        "reportsCount": { "type": "number" },
+        "challengesCount": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "email", "role", "ecoPoints"]
+    },
+    "PollutionReport": {
+      "title": "PollutionReport",
+      "description": "Pollution incident reported by a citizen",
+      "type": "object",
+      "properties": {
+        "reportId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 150 },
+        "userName": { "type": "string", "maxLength": 100 },
+        "pollutionType": { "type": "string", "enum": ["Air", "Water", "Plastic/Waste", "Noise", "Deforestation", "Other"] },
+        "location": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "severity": { "type": "string", "enum": ["Low", "Medium", "High", "Critical"] },
+        "imageUrl": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["Pending", "Under Review", "Resolved", "Rejected"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["reportId", "userId", "pollutionType", "location", "description", "severity", "status"]
+    },
+    "Challenge": {
+      "title": "Challenge",
+      "description": "Eco challenge that users can complete to earn points",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "duration": { "type": "string", "maxLength": 50 },
+        "difficulty": { "type": "string", "enum": ["Easy", "Medium", "Hard"] },
+        "points": { "type": "number" },
+        "category": { "type": "string", "maxLength": 50 },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "title", "description", "duration", "difficulty", "points", "active"]
+    },
+    "ChallengeCompletion": {
+      "title": "ChallengeCompletion",
+      "description": "Log of completed challenge by user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "challengeId": { "type": "string", "maxLength": 128 },
+        "pointsEarned": { "type": "number" },
+        "completedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "challengeId", "pointsEarned", "completedAt"]
+    },
+    "Article": {
+      "title": "Article",
+      "description": "Environmental awareness article",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 500 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "imageUrl": { "type": "string", "maxLength": 2000 },
+        "readTime": { "type": "string", "maxLength": 20 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "description", "content", "category"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Community eco action event",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "location": { "type": "string", "maxLength": 200 },
+        "date": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "participantsCount": { "type": "number" }
+      },
+      "required": ["id", "title", "location", "date", "description"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile with eco-points and role"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Document presence signifies admin role authorization"
+    },
+    "/pollutionReports/{reportId}": {
+      "schema": "PollutionReport",
+      "description": "Public community and user pollution reports"
+    },
+    "/challenges/{challengeId}": {
+      "schema": "Challenge",
+      "description": "Eco challenges catalogue"
+    },
+    "/challengeCompletions/{completionId}": {
+      "schema": "ChallengeCompletion",
+      "description": "User completion track for gamification"
+    },
+    "/articles/{articleId}": {
+      "schema": "Article",
+      "description": "Educational awareness articles"
+    },
+    "/events/{eventId}": {
+      "schema": "Event",
+      "description": "Community volunteer activities and events"
+    }
+  }
+}
